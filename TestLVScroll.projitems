@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>{221C2B3C-4F7C-4356-93FF-7C46B33DC2C7}</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>TestLVScroll</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)TestLVScroll.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SetLightingEditor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LightChannel.cs" />
+  </ItemGroup>
+</Project>
