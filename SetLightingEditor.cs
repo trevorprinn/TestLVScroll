@@ -20,13 +20,21 @@ namespace TestLVScroll {
 					return c;
 				}),
 			};
+			list.ItemSelected += (sender, e) => { list.SelectedItem = null; };
 			Content = list;
 		}
 
 		private class ChannelCell : ViewCell {
 			public static BindableProperty ChannelProperty =
 				BindableProperty.Create<ChannelCell, LightChannel>(c => c.Channel, null,
-					BindingMode.OneWay);
+					BindingMode.OneWay,
+					propertyChanged: (c, o, n) => {
+						var cell = (ChannelCell)c;
+						System.Diagnostics.Debug.WriteLine(string.Format("Old Channel {0}, New Channel {1}",
+							o == null ? "null" : o.Name, n == null ? "null" : n.Name));
+						cell._switchCurrent.IsToggled = n.Enabled;
+						cell._sliderInit.Value = n.Setting;
+					});
 
 			private Slider _sliderInit;
 			private Switch _switchCurrent;
@@ -38,11 +46,15 @@ namespace TestLVScroll {
 					HorizontalOptions = LayoutOptions.FillAndExpand,
 					IsEnabled = false
 				};
+				_sliderInit.ValueChanged += (sender, e) => {
+					Channel.Setting = e.NewValue;
+				};
 				_switchCurrent = new Switch {
 					IsToggled = false
 				};
 				_switchCurrent.Toggled += (sender, e) => {
 					System.Diagnostics.Debug.WriteLine("Toggled " + (Channel == null ? "null" : Channel.Name));
+					Channel.Enabled = e.Value;
 					_sliderInit.IsEnabled = e.Value;
 				};
 
