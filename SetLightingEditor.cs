@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 
 using Xamarin.Forms;
 
 namespace TestLVScroll {
 	public class SetLightingEditor : ContentView {
-		private ObservableCollection<LightChannel> _channels;
 
 		public SetLightingEditor() {
-			_channels = new ObservableCollection<LightChannel>(Enumerable.Range(1, 20).Select(i => new LightChannel(i)));
 			var list = new ListView {
-				ItemsSource = _channels,
+				ItemsSource = Enumerable.Range(1, 20).Select(i => new LightChannel(i)),
 				ItemTemplate = new DataTemplate(typeof(ChannelCell))
 			};
 			list.ItemSelected += (sender, e) => { list.SelectedItem = null; };
