@@ -14,61 +14,30 @@ namespace TestLVScroll {
 			_channels = new ObservableCollection<LightChannel>(Enumerable.Range(1, 20).Select(i => new LightChannel(i)));
 			var list = new ListView {
 				ItemsSource = _channels,
-				ItemTemplate = new DataTemplate(() => {
-					var c = new ChannelCell();
-					c.SetBinding(ChannelCell.ChannelProperty, ".");
-					return c;
-				}),
+				ItemTemplate = new DataTemplate(typeof(ChannelCell))
 			};
 			list.ItemSelected += (sender, e) => { list.SelectedItem = null; };
 			Content = list;
 		}
 
 		private class ChannelCell : ViewCell {
-			public static BindableProperty ChannelProperty =
-				BindableProperty.Create<ChannelCell, LightChannel>(c => c.Channel, null,
-					BindingMode.OneWay,
-					propertyChanged: (c, o, n) => {
-						var cell = (ChannelCell)c;
-						System.Diagnostics.Debug.WriteLine(string.Format("Old Channel {0}, New Channel {1}",
-							o == null ? "null" : o.Name, n == null ? "null" : n.Name));
-						cell._switchCurrent.IsToggled = n.Enabled;
-						cell._sliderInit.Value = n.Setting;
-					});
-
-			private Slider _sliderInit;
-			private Switch _switchCurrent;
-
 			public ChannelCell() {
-				_sliderInit = new Slider {
+				var sliderInit = new Slider {
 					Minimum = 0,
 					Maximum = 255,
-					HorizontalOptions = LayoutOptions.FillAndExpand,
-					IsEnabled = false
+					HorizontalOptions = LayoutOptions.FillAndExpand
 				};
-				_sliderInit.ValueChanged += (sender, e) => {
-					Channel.Setting = e.NewValue;
-				};
-				_switchCurrent = new Switch {
-					IsToggled = false
-				};
-				_switchCurrent.Toggled += (sender, e) => {
-					System.Diagnostics.Debug.WriteLine("Toggled " + (Channel == null ? "null" : Channel.Name));
-					Channel.Enabled = e.Value;
-					_sliderInit.IsEnabled = e.Value;
-				};
+				sliderInit.SetBinding(Slider.ValueProperty, "Setting");
+				sliderInit.SetBinding(Slider.IsEnabledProperty, "Enabled");
+				var switchCurrent = new Switch();
+				switchCurrent.SetBinding(Switch.IsToggledProperty, "Enabled");
 
 				var layout = new StackLayout {
 					Orientation = StackOrientation.Horizontal,
-					Children = { _sliderInit, _switchCurrent }
+					Children = { sliderInit, switchCurrent }
 				};
 
 				View = layout;
-			}
-
-			public LightChannel Channel {
-				get { return (LightChannel)GetValue(ChannelProperty); }
-				set { SetValue(ChannelProperty, value); }
 			}
 		}
 	}
